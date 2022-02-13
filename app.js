@@ -177,6 +177,225 @@ let data = {
     "Post Author": ""
 }
 
+let actualPost = null;
+
+let PostShow = {
+
+    render : async () => {
+        let request = Utils.parseRequestURL()
+        let post = await getPost(request.id)
+        actualPost = post;
+        
+        return /*html*/`
+            <section class="section">
+                <h1> Post Id : ${post.id}</h1>
+                <p> Post Title : ${post.title} </p>
+                <p> Post Content : ${post.content} </p>
+                <p> Post Author : ${post.name} </p>
+                <button class="button is-primary" id="edit">Edit</button>
+            </section>
+        `
+    }
+    , after_render: async () => {
+        document.getElementById("edit").addEventListener("click", () => {
+            if (login) {
+                data["Post Id"] = actualPost.id;
+                data["Post Title"] = actualPost.title;
+                data["Post Content"] = actualPost.content;
+                data["Post Author"] = actualPost.name;
+                location.href = "#/edit"
+                console.log(data);
+            } else {
+                alert("No has iniciado sesión!");
+            }
+            //location.href = "#"
+        })
+    }
+}
+
+let Edit = {
+
+    render: async () => {
+        return /*html*/ `
+            <section class="section">
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" id="id_input" type="text">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="title_input" type="text">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="content_input" type="text">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="author_input" type="text">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control">
+                        <button class="button is-primary" id="update_btn">
+                        Register
+                        </button>
+                    </p>
+                </div>
+            </section>
+        `
+    }
+
+    , after_render: async () => {
+        let id = document.getElementById("id_input");
+        let title = document.getElementById("title_input");
+        let content = document.getElementById("content_input");
+        let author = document.getElementById("author_input");
+        id.value = data["Post Id"];
+        title.value = data["Post Title"];
+        content.value = data["Post Content"];
+        author.value = data["Post Author"];
+        document.getElementById("update_btn").addEventListener ("click",  () => {
+            if (id.value != "" && title.value != "" && content.value != "" && author.value != "") {
+                alert("Modificando datos --> Gancho que no");
+                location.href = "#/";
+            } else {
+                alert("Completa todos los datos");
+            }
+        })
+    }
+}
+
+let Register = {
+
+    render: async () => {
+        return /*html*/ `
+            <section class="section">
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" id="email_input" type="email" placeholder="Enter your Email">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="pass_input" type="password" placeholder="Enter a Password">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="repeat_pass_input" type="password" placeholder="Enter the same Password again">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control">
+                        <button class="button is-primary" id="register_submit_btn">
+                        Register
+                        </button>
+                    </p>
+                </div>
+            </section>
+        `
+    }
+
+    , after_render: async () => {
+        document.getElementById("register_submit_btn").addEventListener ("click",  () => {
+            let email       = document.getElementById("email_input");
+            let pass        = document.getElementById("pass_input");
+            let repeatPass  = document.getElementById("repeat_pass_input");
+            if (pass.value != repeatPass.value) {
+                alert (`The passwords dont match`)
+            } else if (email.value =='' | pass.value == '' | repeatPass == '') {
+                alert (`The fields cannot be empty`)
+            } 
+            else {
+                alert(`User with email ${email.value} was successfully submitted!`)
+            }    
+        })
+    }
+}
+
+let login = false;
+
+let Login = {
+
+    render: async () => {
+        return /*html*/ `
+            <section class="section">
+                <div class="field">
+                    <p class="control has-icons-left has-icons-right">
+                        <input class="input" id="email_input" type="email" placeholder="Enter your Email">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <span class="icon is-small is-right">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input class="input" id="pass_input" type="password" placeholder="Enter a Password">
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control">
+                        <button class="button is-primary" id="loginBtn">
+                        Login
+                        </button>
+                    </p>
+                </div>
+            </section>
+        `
+    }
+
+    , after_render: async () => {
+        document.getElementById("loginBtn").addEventListener ("click",  () => {
+            let email = document.getElementById("email_input");
+            let pass  = document.getElementById("pass_input");
+            if (email.value != "" && pass.value != "") {
+                // Lo lleva a la lista con la opción de editar.
+                login = true;
+                location.href = "#/";
+                //alert("Sesión iniciada")
+            } else {
+                alert("Inserta un correo y contraseña")
+            }
+        })
+    }
+}
 
 const routes = {
     '/'             : Home
