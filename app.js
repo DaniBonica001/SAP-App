@@ -21,7 +21,7 @@ const router = async () => {
     await Bottombar.after_render();
 
 
-    console.log("a");
+    //console.log("a");
     let request = Utils.parseRequestURL()
 
 
