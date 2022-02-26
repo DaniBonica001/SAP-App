@@ -1,4 +1,5 @@
 "use strict";
+
 const Utils = { 
 
     parseRequestURL : () => {
@@ -70,10 +71,10 @@ let Navbar = {
                         <div class="navbar-end">
                             <div class="navbar-item">
                                 <div class="buttons">
-                                    <a class="button is-primary" href="#/register">
+                                    <a class="button is-primary" id="register_btn" href="#/register">
                                         <strong>Sign up</strong>
                                     </a>
-                                    <a class="button is-light" href="#/login">
+                                    <a class="button is-light" id="login_btn" href="#/login">
                                         Log in
                                     </a>
                                 </div>
@@ -85,7 +86,22 @@ let Navbar = {
         `
         return view
     },
-    after_render: async () => { }
+    after_render: async () => {
+        //document.getElementById("register_btn").href = "#/register"
+        if (login) {
+            let regBtn = document.getElementById("register_btn")
+            let logBtn = document.getElementById("login_btn")
+            regBtn.innerText = username
+            logBtn.innerText = "Log out"
+
+            regBtn.href = "javascript:void(0)";
+            logBtn.addEventListener('click', () => {
+                location.href = "#/"
+                login = false
+            })
+
+        }
+     }
 
 }
 
@@ -371,7 +387,7 @@ let Edit = {
                 <div class="field">
                     <p class="control">
                         <button class="button is-primary" id="update_btn">
-                        Register
+                        Modify
                         </button>
                     </p>
                 </div>
@@ -459,6 +475,8 @@ let Register = {
     }
 }
 
+let username = ""
+
 let login = false;
 
 let Login = {
@@ -502,6 +520,7 @@ let Login = {
             let pass  = document.getElementById("pass_input");
             if (email.value != "" && pass.value != "") {
                 // Lo lleva a la lista con la opción de editar.
+                username = email.value
                 login = true;
                 location.href = "#/";
                 //alert("Sesión iniciada")
